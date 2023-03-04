@@ -42,7 +42,7 @@ const HeroBanner = () => {
       <img
         src={HeroBannerImage}
         alt='HeroBannerImage'
-        class='hero-banner-img'
+        className='hero-banner-img'
       />
     </Box>
   );
