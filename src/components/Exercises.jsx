@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 import { Stack, Box, Typography } from '@mui/material';
 import { exercisesOptions, fetchData } from '../utils/fetchData';
@@ -9,16 +9,37 @@ const Exercises = ({ exercise, setExercise, bodyPart }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const exercisesPerPage = 9;
 
+  // Pagination
   const indexOfLastExercise = currentPage * exercisesPerPage;
-
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
-
-  const currentExercises = exercise.slice(
+  const currentExercises = exercise?.slice(
     indexOfFirstExercise,
     indexOfLastExercise
   );
 
-  const paginate = (e, value) => {
+  useEffect(() => {
+    const fetchExercisesData = async () => {
+      let exercisesData = [];
+
+      if (bodyPart === 'all') {
+        exercisesData = await fetchData(
+          'https://exercisedb.p.rapidapi.com/exercises',
+          exercisesOptions
+        );
+      } else {
+        exercisesData = await fetchData(
+          `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`,
+          exercisesOptions
+        );
+      }
+
+      setExercise(exercisesData);
+    };
+
+    fetchExercisesData();
+  }, [bodyPart]);
+
+  const paginate = (event, value) => {
     setCurrentPage(value);
 
     window.scrollTo({ top: 1800, behavior: 'smooth' });
